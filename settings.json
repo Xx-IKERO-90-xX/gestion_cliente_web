@@ -1,0 +1,8 @@
+{
+    "database": {
+        "host": "dominio o ip",
+        "user": "usuarios",
+        "password": "contraseña",
+        "db": "GESTION_USUARIOS"
+    }
+}

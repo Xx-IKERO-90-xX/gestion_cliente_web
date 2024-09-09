@@ -1,0 +1,36 @@
+{%extends 'base.jinja'%}
+
+{%block title%} {{client['dni']}} {%endblock%}
+
+{%block content%} 
+    <link href="../../static/style/style.css" rel="stylesheet">
+    <link href="../../static/style/forms.css" rel="stylesheet">
+    <br><br><br>
+    <div style="text-align: center;">
+        <a href="{{url_for('index')}}" class="btn btn-primary"><strong>Volver</strong></a>
+    </div>
+    <br><br><br>
+    <div class="detallesCliente">
+        <div class="contenido">
+            <h3>Datos Personales ({{client['dni']}})</h3>
+            <div class="data">
+                <strong>Nombre: </strong><span>{{client['nombre']}}</span><br>
+                <strong>Apellidos: </strong><span>{{client['apellidos']}}</span><br>
+                <strong>Direccion: </strong><span>{{client['direccion']}}</span><br>
+            </div>
+            <br><br>
+            <h3>Contacto</h3>
+            <div class="data">
+                <strong>Telefono: </strong><span>{{client['telefono']}}</span><br>
+                <strong>Correo: </strong><span>{{client['email']}}</span>
+            </div>
+            <br><br>
+            <h3>Ubicación</h3>
+            <div class="data">
+                <strong>Direccion: </strong><span>{{client['direccion']}}</span><br>
+                <strong>Enlace Google Maps: </strong><span><strong><a href="{{client['googlemap_link']}}">{{client['googlemap_link']}}</a></strong></span>  
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

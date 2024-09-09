@@ -1,0 +1,33 @@
+{%extends 'base.jinja'%}
+
+{%block title %} Inicio {%endblock%}
+
+{%block content%}
+
+<link href="../static/style/forms.css" rel="stylesheet">
+
+{%if error == '1' %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    Los datos introducidos son incorrectos, revisalos.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{%endif%}
+
+<form class="formLogin" action="{{url_for('login')}}" method="post">
+    <label for="first">
+        Nombre:
+    </label>
+    <input type="text" id="first" name="name" required>
+    <label for="password">
+        Contraseña:
+    </label>
+    <input type="password" id="password" name="passwd" required>
+
+    <div class="wrap">
+        <button type="submit" onclick="solve()">
+            <strong>Iniciar Sesion</strong>
+        </button>
+    </div>
+</form>
+
+{%endblock%}

@@ -1,0 +1,60 @@
+{%extends 'base.jinja'%}
+
+{%block title%} Editar Cliente {%endblock%}
+
+{%block content%}
+
+<link href="../../static/style/style.css" rel="stylesheet">
+<link href="../../static/style/forms.css" rel="stylesheet">
+
+
+<form method="post" class="createForm" action="{{url_for('edit_client', dni=client['dni'])}}">
+    <a href="{{url_for('index')}}" class="btn btn-primary"><strong>Volver</strong></a>
+    <div class="formContent">
+        <div class="row">
+            <div class="col col-sm-4">
+                <label for="dniInput" class="form-label"><strong>DNI</strong></label>
+                <input type="text" value="{{client['dni']}}" name="dni" class="form-control" id="dniInput" readonly>
+            </div>
+            <div class="col col-sm-4">
+                <label for="nameInput" class="form-label"><strong>Nombre</strong></label>
+                <input type="text" value="{{client['nombre']}}" name="nombre" class="form-control" id="nameInput" aria-describedby="emailHelp">
+            </div>
+            <div class="col col-sm-4">
+                <label for="subnameInput" class="form-label"><strong>Apellidos</strong></label>
+                <input type="text" value="{{client['apellidos']}}" name="apellidos" class="form-control" id="subnameInput">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col col-12">
+                <label for="direccionInput" class="form-label"><strong>Direccion</strong></label>
+                <input type="text" value="{{client['direccion']}}" name="direccion" class="form-control" id="direccionInput">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col col-6">
+                <label for="emailInput"><strong>Correo electronico</strong></label>
+                <input type="text" value="{{client['email']}}" name="email" class="form-control" id="emailInput">
+            </div>
+            <div class="col col-6">
+                <label for="telefonoInput"><strong>Telefono</strong></label>
+                <input type="text" value="{{client['telefono']}}" name="telefono" class="form-control" id="telefonoInput">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col col-12">
+                <label for="googleLinkInput"><strong>Enlace de Google Maps</strong></label>
+                <input type="text" value="{{client['googlemap_link']}}" name="googlemap_link" class="form-control" id="googleLinkInput">
+            </div>
+        </div>
+    </div>
+    <div class="buttonsForm">
+        <button type="submit" class="btn btn-success"><strong>Editar</strong></button>
+    </div>
+</form>
+
+
+{%endblock%}

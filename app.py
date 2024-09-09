@@ -1,0 +1,189 @@
+import os
+import sys
+from flask import request, Flask, render_template, redirect, session, sessions, url_for
+import mysql.connector
+import json
+import controller.AccessController as access
+import controller.DatabaseController as database
+import controller.UsersController as users
+import controller.ClientsController as clients
+
+app = Flask(__name__)
+app.secret_key = "tr4rt34t334yt"
+
+settings = {}
+with open('settings.json') as archivo:
+    settings = json.load(archivo)
+
+
+@app.route('/')
+async def index(error=0):
+    if "id" in session:
+        clients_list = await clients.get_all_clients()
+        return render_template('index.jinja', session=session, clients=clients_list)
+    else:
+        return render_template('login.jinja', error=error)
+
+@app.route('/login', methods=['GET','POST'])
+async def login():
+    username = request.form['name']
+    passwd = request.form['passwd']
+
+    error_cod = await access.validate_login(username, passwd)
+    
+    if error_cod == 0:
+        user = await users.get_user_by_username(username)
+        session['id'] = user['id']
+        session['username'] = user['username']
+        session['role'] = user['role']
+        
+        return redirect(url_for('index'))
+    
+    else:
+        return redirect(url_for('index', error=error_cod))    
+    
+@app.route('/logout', methods=['GET'])
+async def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+
+
+########### [CLIENTES] #########################
+
+@app.route('/clientes/nuevo', methods=['GET', 'POST'])
+async def new_client():
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            if request.method == 'GET':
+                return render_template('clients/create.jinja', session=session)
+            else:
+                dni = request.form['dni']
+                nombre = request.form['nombre']
+                apellidos = request.form['apellidos']
+                direccion = request.form['direccion']
+                correo = request.form['email']
+                telefono = request.form['telefono']
+                googlemap_link = request.form['googlemap_link']
+                
+                await clients.create_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
+                
+                return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/clientes/delete/<string:dni>', methods=['GET'])
+async def delete_client(dni):
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            await clients.delete_client(dni)
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+    
+@app.route('/clientes/edit/<string:dni>', methods=['GET', 'POST'])
+async def edit_client(dni):
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            if request.method == "GET":
+                client = await clients.get_client_by_dni(dni)
+                return render_template('clients/edit.jinja', client=client, session=session)
+            else:
+                nombre = request.form['nombre']
+                apellidos = request.form['apellidos']
+                direccion = request.form['direccion']
+                correo = request.form['email']
+                telefono = request.form['telefono']
+                googlemap_link = request.form['googlemap_link']
+                
+                await clients.update_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
+                
+                return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/clientes/detalles/<string:dni>', methods=['GET'])
+async def client_details(dni):
+    if 'id' in session:
+        if session['role'] == 'Empleado' or session['role'] == 'Administrador':
+            client = await clients.get_client_by_dni(dni)
+            return render_template('clients/detalle.jinja', client=client, session=session)
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+    
+@app.route('/clientes/filtered', methods=['GET', 'POST'])
+async def filter_clients():
+    if 'id' in session:
+        if session['role'] == 'Empleado' or session['role'] == 'Administrador':
+            clientes = []
+            filterDni = request.form['filterDni']
+            filterName = request.form['filterName']
+            
+            if filterDni or filterName:
+                if filterDni and not filterName:
+                    clientes = await clients.filter_client_action(None, filterDni)
+                elif not filterDni and filterName:
+                    clientes = await clients.filter_client_action(filterName, None)
+                elif filterDni and filterName:
+                    clientes = await clients.filter_client_action(filterName, filterDni)
+                
+                return render_template('index.jinja', filterName=filterName, filterDni=filterDni, clients=clientes, session=session)
+            
+            else:
+                return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/usuarios', methods=['GET'])
+async def index_users():
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            usuarios = await users.get_users()
+            return render_template('users/index.jinja', users=usuarios, session=session)
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/usuarios/nuevo', methods=['GET', 'POST'])
+async def new_user():
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            if request.method == 'GET':
+                return render_template('users/create.jinja', session=session)
+            else:
+                username = request.form['username']
+                passwd = request.form['passwd']
+                
+                await users.create_user(username, passwd)
+                
+                return redirect(url_for('index_users'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/usuarios/delete/<int:id>', methods=['GET'])
+async def delete_user(id):
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            await users.delete_user(id)
+            return redirect(url_for('index_users'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+if __name__ == "__main__":
+    app.run(debug=True)
