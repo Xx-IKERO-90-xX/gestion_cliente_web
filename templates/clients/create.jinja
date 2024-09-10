@@ -4,11 +4,16 @@
 
 {%block content%}
 
+<link href="../../static/style/forms.css" rel="stylesheet">
+<br><br>
 {%if errors %}
-
+    {%for error in errors%}
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+    {%endfor%}
 {%endif%}
 
-<link href="../../static/style/forms.css" rel="stylesheet">
 
 <form method="post" class="createForm" action="{{url_for('new_client')}}">
     <a href="{{url_for('index')}}" class="btn btn-primary"><strong>Volver</strong></a>
@@ -16,40 +21,40 @@
         <div class="row">
             <div class="col col-sm-4">
                 <label for="dniInput" class="form-label"><strong>DNI</strong></label>
-                <input type="text" name="dni" class="form-control" id="dniInput">
+                <input type="text" name="dni" class="form-control" id="dniInput" required>
             </div>
             <div class="col col-sm-4">
                 <label for="nameInput" class="form-label"><strong>Nombre</strong></label>
-                <input type="text" name="nombre" class="form-control" id="nameInput" aria-describedby="emailHelp">
+                <input type="text" name="nombre" class="form-control" id="nameInput" required>
             </div>
             <div class="col col-sm-4">
                 <label for="subnameInput" class="form-label"><strong>Apellidos</strong></label>
-                <input type="text" name="apellidos" class="form-control" id="subnameInput">
+                <input type="text" name="apellidos" class="form-control" id="subnameInput" required>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-12">
                 <label for="direccionInput" class="form-label"><strong>Direccion</strong></label>
-                <input type="text" name="direccion" class="form-control" id="direccionInput">
+                <input type="text" name="direccion" class="form-control" id="direccionInput" required>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-6">
                 <label for="emailInput"><strong>Correo electronico</strong></label>
-                <input type="text" name="email" class="form-control" id="emailInput">
+                <input type="text" name="email" class="form-control" id="emailInput" required>
             </div>
             <div class="col col-6">
                 <label for="telefonoInput"><strong>Telefono</strong></label>
-                <input type="text" name="telefono" class="form-control" id="telefonoInput">
+                <input type="text" name="telefono" class="form-control" id="telefonoInput" required>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-12">
                 <label for="googleLinkInput"><strong>Enlace de Google Maps</strong></label>
-                <input type="text" name="googlemap_link" class="form-control" id="googleLinkInput">
+                <input type="text" name="googlemap_link" class="form-control" id="googleLinkInput" required>
             </div>
         </div>
     </div>

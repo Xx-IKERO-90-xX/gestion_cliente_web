@@ -101,3 +101,16 @@ async def search_users(text):
     connection.close()
     
     return json_result
+
+'''
+    Comprueba si el nombre del usuario esta en uso.
+'''
+async def user_name_in_use(username):
+    inUse = False
+    usuarios = await get_users()
+    
+    for user in usuarios:
+        if user['username'] == username:
+            inUse = True
+    
+    return inUse

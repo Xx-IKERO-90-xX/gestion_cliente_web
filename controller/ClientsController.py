@@ -140,3 +140,53 @@ async def filter_client_action(filterName=None, filterDni=None):
     else:
         connection.close()
         return json_result
+
+
+'''
+    Comprueba si el formato del es valido.
+'''
+async def gmail_has_two_parts(gmail):
+    parts = gmail.split('@')
+    return len(parts) == 2 and parts[0] != '' and parts[1] != ''
+
+
+'''
+    Comprueba si el DNI esta en uso.
+'''
+async def dni_in_use(dni):
+    inUse = False
+    clientes = await get_all_clients()
+    
+    for client in clientes:
+        if client['dni'] == dni:
+            inUse = True
+    
+    return inUse        
+
+'''
+    Comprueba si el correo ya esta en uso.
+'''
+async def gmail_in_use(gmail):
+    inUse = False
+    clientes = await get_all_clients()
+    
+    for client in clientes:
+        if gmail == client['correo']:
+            inUse = True
+    
+    return inUse
+            
+
+'''
+    Valida los datos del cliente.
+'''
+async def validate_client(gmail, dni):
+    errors = []
+    
+    if await gmail_has_two_parts(gmail) == False:
+        errors.append("El formato del correo no es valido.")
+    if dni != None:
+        if await dni_in_use(dni):
+            errors.append("El DNI introducido esta en uso.")
+    
+    return errors

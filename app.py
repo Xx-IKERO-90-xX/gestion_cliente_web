@@ -72,9 +72,14 @@ async def new_client():
                 telefono = request.form['telefono']
                 googlemap_link = request.form['googlemap_link']
                 
-                await clients.create_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
+                errors = await clients.validate_client(correo, dni)
                 
-                return redirect(url_for('index'))
+                if errors.count == 0:
+                    await clients.create_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
+                
+                    return redirect(url_for('index'))
+                else:
+                    return render_template('clients/create.jinja', errors=errors, session=session)
         else:
             return redirect(url_for('index'))
     else:
@@ -113,9 +118,13 @@ async def edit_client(dni):
                 telefono = request.form['telefono']
                 googlemap_link = request.form['googlemap_link']
                 
-                await clients.update_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
-                
-                return redirect(url_for('index'))
+                if await clients.gmail_has_two_parts(correo):
+                    await clients.update_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
+                    return redirect(url_for('index'))
+                else:
+                    error_msg = "El formato del correo es invalido."
+                    client = await clients.get_client_by_dni(dni)
+                    return render_template('clients/edit.jinja', error=error_msg, client=client, session=session)                
         else:
             return redirect(url_for('index'))
     else:
@@ -201,10 +210,17 @@ async def new_user():
             else:
                 username = request.form['username']
                 passwd = request.form['passwd']
+                passwd2 = request.form['passwd2']
                 
-                await users.create_user(username, passwd)
-                
-                return redirect(url_for('index_users'))
+                if await users.user_name_in_use(username):
+                    error_msg = f"El nombre de usuario {username} esta en uso."
+                    return render_template('users/create.jinja', error=error_msg, session=session)
+                elif passwd != passwd2:
+                    error_msg = "Ambas contraseñas deben ser iguales para continuar."
+                    return render_template('users/create.jinja', error=error_msg, session=session)
+                else:
+                    await users.create_user(username, passwd)
+                    return redirect(url_for('index_users'))
         else:
             return redirect(url_for('index'))
     else:

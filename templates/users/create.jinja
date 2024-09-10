@@ -7,28 +7,34 @@
 <link href="../../static/style/style.css" rel="stylesheet">
 <link href="../../static/style/forms.css" rel="stylesheet">
 
+{%if error %}
+    <br><br>
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+{%endif%}
 
-<form method="post" class="createForm">
+<form id="createForm" method="post" class="createForm">
     <a href="{{url_for('index')}}" class="btn btn-primary"><strong>Volver</strong></a>
     <div class="formContent">
         <div class="row">
             <div class="col col-sm-12 col-lg-4 col-12">
                 <label for="usernameInput" class="form-label"><strong>Nombre de Usuario</strong></label>
-                <input type="text" name="username" class="form-control" id="usernameInput">
+                <input type="text" name="username" class="form-control" id="usernameInput" required>
             </div>
             <div class="col col-sm-12 col-lg-4 col-12">
                 <label for="passwdInput" class="form-label"><strong>Contraseña</strong></label>
-                <input type="password" name="passwd" class="form-control" id="passwdInput">
+                <input type="password" name="passwd" class="form-control" id="passwdInput" required>
             </div>
             <div class="col col-sm-12 col-lg-4 col-12">
                 <label for="passwd2input" class="form-label"><strong>Confirmar Contraseña</strong></label>
-                <input type="password" name="passwd2" class="form-control" id="passwd2input">
+                <input type="password" name="passwd2" class="form-control" id="passwd2input" required>
             </div>
         </div>
         <br>
        
     <div class="buttonsForm">
-        <button type="submit" class="btn btn-success"><strong>Editar</strong></button>
+        <button type="submit" class="btn btn-success"><strong>Crear</strong></button>
     </div>
 </form>
 

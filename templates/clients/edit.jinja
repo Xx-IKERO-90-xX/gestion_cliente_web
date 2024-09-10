@@ -7,6 +7,12 @@
 <link href="../../static/style/style.css" rel="stylesheet">
 <link href="../../static/style/forms.css" rel="stylesheet">
 
+{%if error %}
+    <br><br>
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+{%endif%}
 
 <form method="post" class="createForm" action="{{url_for('edit_client', dni=client['dni'])}}">
     <a href="{{url_for('index')}}" class="btn btn-primary"><strong>Volver</strong></a>
