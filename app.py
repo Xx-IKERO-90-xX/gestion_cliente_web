@@ -48,9 +48,15 @@ async def logout():
     return redirect(url_for('index'))
 
 
+"""
+-----------------------------------------------------------
+  [ CLIENTES ]
+-----------------------------------------------------------
+"""
 
-########### [CLIENTES] #########################
-
+'''
+    Se crea un nuevo cliente y lo almacena en la base de datos.
+'''
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
 async def new_client():
     if 'id' in session:
@@ -74,6 +80,10 @@ async def new_client():
     else:
         return redirect(url_for('index'))
 
+
+'''
+    Se elimina un cliente dependiendo del DNI pasado en el parametro
+'''
 @app.route('/clientes/delete/<string:dni>', methods=['GET'])
 async def delete_client(dni):
     if 'id' in session:
@@ -85,6 +95,9 @@ async def delete_client(dni):
     else:
         return redirect(url_for('index'))
     
+'''
+    Actualiza los datos de un cliente.
+'''
 @app.route('/clientes/edit/<string:dni>', methods=['GET', 'POST'])
 async def edit_client(dni):
     if 'id' in session:
@@ -109,6 +122,9 @@ async def edit_client(dni):
         return redirect(url_for('index'))
 
 
+'''
+    Genera una plantilla donde se muestra la informacion detallada de un cliente. 
+'''
 @app.route('/clientes/detalles/<string:dni>', methods=['GET'])
 async def client_details(dni):
     if 'id' in session:
@@ -119,7 +135,11 @@ async def client_details(dni):
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
-    
+
+
+'''
+    Se filtra los clientes almacenados en la base de datos dependiendo de los datos que se les pase en la peticion POST.
+'''
 @app.route('/clientes/filtered', methods=['GET', 'POST'])
 async def filter_clients():
     if 'id' in session:
@@ -145,6 +165,18 @@ async def filter_clients():
     else:
         return redirect(url_for('index'))
 
+
+
+
+"""
+----------------------------------------------------------------------------------------------
+    [ USUARIOS ]
+----------------------------------------------------------------------------------------------
+"""
+
+'''
+    Genera la plantilla donde se muestra una tabla con todos los usuarios.
+'''
 @app.route('/usuarios', methods=['GET'])
 async def index_users():
     if 'id' in session:
@@ -156,6 +188,10 @@ async def index_users():
     else:
         return redirect(url_for('index'))
 
+
+'''
+    Crea un nuevo usuario y lo registra en la base de datos
+'''
 @app.route('/usuarios/nuevo', methods=['GET', 'POST'])
 async def new_user():
     if 'id' in session:
@@ -174,6 +210,10 @@ async def new_user():
     else:
         return redirect(url_for('index'))
 
+
+'''
+    Borra a un usuario de la base de datos.
+'''
 @app.route('/usuarios/delete/<int:id>', methods=['GET'])
 async def delete_user(id):
     if 'id' in session:
@@ -185,5 +225,25 @@ async def delete_user(id):
     else:
         return redirect(url_for('index'))
 
+
+'''
+    Filtra los usuarios dependiendo del texto que se le pase en el POST
+'''
+@app.route('/usuarios/filtered', methods=['GET', 'POST'])
+async def filter_users():
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            text = request.form['filterText']
+            if text:
+                usuarios = await users.search_users(text)
+                return render_template('users/index.jinja', users=usuarios, text=text, session=session)
+            else:
+                return redirect(url_for('index_users'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+    
+    
 if __name__ == "__main__":
     app.run(debug=True)

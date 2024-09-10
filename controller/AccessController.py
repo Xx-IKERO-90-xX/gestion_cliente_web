@@ -3,6 +3,7 @@ import sys
 from flask import request, Flask, render_template, redirect, session, sessions, url_for
 import mysql.connector
 import controller.DatabaseController as database
+import controller.UsersController as users
 from passlib.hash import pbkdf2_sha256
 
 sys.path.append("..")
@@ -13,26 +14,24 @@ if app_route not in sys.path:
 
 import app
 
+'''
+    Validamos el usuario y la contraseña.
+'''
 async def validate_login(username, passwd):
     cod = 1
+    usuarios = await users.get_users()
     
-    connection = await database.open_database_connection()
-    cursor = connection.cursor()
-    
-    cursor.execute("SELECT * FROM USUARIOS;")
-    
-    result = cursor.fetchall()
-    json_users = await database.covert_to_json(cursor, result)
-    
-    for user in json_users:
+    for user in usuarios:
         if user['username'] == username and pbkdf2_sha256.verify(passwd, user['passwd']):
             cod = 0
             break
-    
-    connection.close()
-    
+        
     return cod
 
+
+'''
+    Encripta la contraseña que se le pasa.
+'''
 async def encrypt_password(passwd):
     hash_passwd = pbkdf2_sha256.hash(passwd)
     return hash_passwd

@@ -12,6 +12,9 @@ if app_route not in sys.path:
 import app
 
 
+'''
+    Establece la conexion con la base de datos.
+'''
 async def open_database_connection():
     connection = mysql.connector.connect(
         host = app.settings["database"]["host"],
@@ -21,6 +24,9 @@ async def open_database_connection():
     )
     return connection
 
+'''
+    Convierte los datos pasados a formato JSON
+'''
 async def covert_to_json(cursor, result):
     columns = [column[0] for column in cursor.description]
     json_result = []

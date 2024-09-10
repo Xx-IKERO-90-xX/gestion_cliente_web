@@ -4,13 +4,13 @@
 
 {%block content%}
 <br><br><br><br>
-<form class="form-inline filterForm" method="post" action="{{url_for('filter_clients')}}">
+<form class="form-inline filterForm" method="post" action="{{url_for('filter_users')}}">
 <div class="row">
     <div class="col col-7">
-        {%if filterName%}
-            <input type="text" name="filterName" class="form-control" placeholder="Buscar Usuarios" value="{{filterName}}">
+        {%if text%}
+            <input type="text" name="filterText" class="form-control" placeholder="Buscar Usuarios" value="{{text}}">
         {%else%}
-            <input type="text" name="filterName" class="form-control" placeholder="Buscar Usuarios">
+            <input type="text" name="filterText" class="form-control" placeholder="Buscar Usuarios">
         {%endif%}
     </div>
     <div class="col col-5">
