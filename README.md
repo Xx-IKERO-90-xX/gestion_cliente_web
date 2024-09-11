@@ -20,12 +20,16 @@
 
 ### 2. Tener Servidor de Base de Datos MySQL
 
-![mysql](https://github.com/user-attachments/assets/5ccaf816-7b9c-4634-bbc8-e632381b836c)
-
 Es fundamental tener un servidor de Base de Datos MySQL para almacenar los datos que la aplicación maneja.
 Hay maneras tanto en la nuve como de manera local pero me enfocaré ne la manera local:
 #### Instalacion en Windows (MySQL Server y Workbench):
   1. Instala MySQL Server [aquí](https://dev.mysql.com/downloads/mysql/8.0.html):
   2. Instala MySQL Workbench [aquí](https://dev.mysql.com/downloads/workbench/).
+#### Instalacion en Linux:
+  Primero actualizamos los paquetes del sistema:
+  ```
+    sudo apt update && sudo apt upgrade
+  ```
+  
      
   
