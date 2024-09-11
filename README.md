@@ -19,7 +19,9 @@
   ```
 
 ### 2. Tener Servidor de Base de Datos MySQL
-![add_python_to_path](https://i0.wp.com/futuresolutionsonline.co.uk/wp-content/uploads/2023/04/mySQL-logo.png?fit=300%2C300&ssl=1)
+
+![mysql](https://github.com/user-attachments/assets/5ccaf816-7b9c-4634-bbc8-e632381b836c)
+
 Es fundamental tener un servidor de Base de Datos MySQL para almacenar los datos que la aplicación maneja.
 Hay maneras tanto en la nuve como de manera local pero me enfocaré ne la manera local:
 #### Instalacion en Windows (MySQL Server y Workbench):
