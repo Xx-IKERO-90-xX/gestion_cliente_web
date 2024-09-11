@@ -16,8 +16,5 @@
   2. Actualizar el listado de paquetes:
   ```bash
     sudo apt update
-
-  ```bash
     sudo apt upgrade
-
-    
+  ```
