@@ -30,6 +30,7 @@ Hay maneras tanto en la nuve como de manera local pero me enfocaré ne la manera
   ```
     sudo apt update && sudo apt upgrade
   ```
+  Luego hay que continuar con estas [instrucciones](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04-es).
   
      
   
