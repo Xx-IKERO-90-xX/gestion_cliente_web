@@ -11,4 +11,13 @@
   4. Verifica la instalación abriendo el **Símbolo del sistema** (`cmd`) y ejecuta el siguiente comando:
      ```bash
      python --version
+#### 🐧Linux 
+  1. Abrir la terminal.
+  2. Actualizar el listado de paquetes:
+  ```bash
+    sudo apt update
+
+  ```bash
+    sudo apt upgrade
+
     
