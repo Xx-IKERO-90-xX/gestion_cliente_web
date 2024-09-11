@@ -17,3 +17,13 @@
   ```bash
     sudo apt update && sudo apt upgrade
   ```
+
+### 2. Tener Servidor de Base de Datos MySQL
+![add_python_to_path](https://www.ciset.es/images/Glosario/mysql.png)
+Es fundamental tener un servidor de Base de Datos MySQL para almacenar los datos que la aplicación maneja.
+Hay maneras tanto en la nuve como de manera local pero me enfocaré ne la manera local:
+#### Instalacion en Windows (MySQL Server y Workbench):
+  1. Instala MySQL Server [aquí](https://dev.mysql.com/downloads/mysql/8.0.html):
+  2. Instala MySQL Workbench [aquí](https://dev.mysql.com/downloads/workbench/).
+     
+  
