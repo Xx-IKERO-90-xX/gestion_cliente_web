@@ -15,6 +15,5 @@
   1. Abrir la terminal.
   2. Actualizar el listado de paquetes:
   ```bash
-    sudo apt update
-    sudo apt upgrade
+    sudo apt update && sudo apt upgrade
   ```
