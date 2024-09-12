@@ -46,3 +46,8 @@ footer {
     border-radius: 50%;
     padding: 5px;
 }
+
+.tableContent {
+    height: 200px;
+    overflow-y: scroll;
+}

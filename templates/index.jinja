@@ -11,58 +11,61 @@
 
 <br><br><br><br>
 
-  <form class="form-inline filterForm" method="post" action="{{url_for('filter_clients')}}">
-    <div class="row">
-      <div class="col col-7">
+<form class="form-inline filterForm" method="post" action="{{url_for('filter_clients')}}">
+  <div class="row">
+    <div class="col col-7">
       {%if filterName%}
-        <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos" value="{{filterName}}">
+      <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos"
+        value="{{filterName}}">
       {%else%}
-        <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos">
+      <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos">
       {%endif%}
-      </div>
-      <div class="col col-4">
-      {%if filterDni%}
-        <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI" value="{{filterDni}}">
-      {%else%}
-        <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI">
-      {%endif%}
-      </div>
-      <div class="col col-1">
-        <button class="btn btn-success" type="submit"><strong>Buscar</strong></button>
-      </div>
     </div>
-  </form>
-  <br><br><br>
+    <div class="col col-4">
+      {%if filterDni%}
+      <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI" value="{{filterDni}}">
+      {%else%}
+      <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI">
+      {%endif%}
+    </div>
+    <div class="col col-1">
+      <button class="btn btn-success" type="submit"><strong>Buscar</strong></button>
+    </div>
+  </div>
+</form>
+<br><br><br>
 
 <table class="table table-dark table-striped">
-  <tr>
-    <th>
-      Nombre
-    </th>
-    <th>
-      Correo
-    </th>
-    <th>
-      {%if session['role'] == 'Administrador'%}
+  <thead class="thead-dark">
+    <tr>
+      <th>
+        Nombre
+      </th>
+      <th>
+        Correo
+      </th>
+      <th>
+        {%if session['role'] == 'Administrador'%}
         <a href="{{url_for('new_client')}}" class="btn btn-success"><strong>Nuevo</strong></a>
-      {%endif%}
-    </th>
-  </tr>
-  {%for client in clients%}
-  <tr>
-    <td>{{client['apellidos']}}, {{client['nombre']}}</td>
-    <td>{{client['email']}}</td>
-    <td>
-      <a href="{{url_for('client_details', dni=client['dni'])}}" class="btn btn-secondary"><strong>Detalles</strong></a>
-      {%if session['role'] == 'Administrador'%}
+        {%endif%}
+      </th>
+    </tr>
+  </thead>
+  <tbody class="tableContent">
+    {%for client in clients%}
+    <tr>
+      <td>{{client['apellidos']}}, {{client['nombre']}}</td>
+      <td>{{client['email']}}</td>
+      <td>
+        <a href="{{url_for('client_details', dni=client['dni'])}}"
+          class="btn btn-secondary"><strong>Detalles</strong></a>
+        {%if session['role'] == 'Administrador'%}
         <a href="{{url_for('edit_client', dni=client['dni'])}}" class="btn btn-primary"><strong>Editar</strong></a>
         <a href="{{url_for('delete_client', dni=client['dni'])}}" class="btn btn-danger"><strong>Eliminar</strong></a>
-      {%endif%}
-    </td>
-  </tr>
-  {%endfor%}
+        {%endif%}
+      </td>
+    </tr>
+    {%endfor%}
+  </tbody>
 </table>
-
-
-
 {%endblock%}

@@ -71,10 +71,10 @@ async def new_client():
                 correo = request.form['email']
                 telefono = request.form['telefono']
                 googlemap_link = request.form['googlemap_link']
-                
+
                 errors = await clients.validate_client(correo, dni)
                 
-                if errors.count == 0:
+                if len(errors) == 0:
                     await clients.create_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
                 
                     return redirect(url_for('index'))
@@ -84,6 +84,8 @@ async def new_client():
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
+
+
 
 
 '''
@@ -99,7 +101,9 @@ async def delete_client(dni):
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
-    
+
+
+
 '''
     Actualiza los datos de un cliente.
 '''
@@ -183,6 +187,8 @@ async def filter_clients():
 ----------------------------------------------------------------------------------------------
 """
 
+
+
 '''
     Genera la plantilla donde se muestra una tabla con todos los usuarios.
 '''
@@ -196,6 +202,7 @@ async def index_users():
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
+
 
 
 '''
@@ -227,6 +234,8 @@ async def new_user():
         return redirect(url_for('index'))
 
 
+
+
 '''
     Borra a un usuario de la base de datos.
 '''
@@ -240,6 +249,8 @@ async def delete_user(id):
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
+
+
 
 
 '''
