@@ -39,7 +39,7 @@ CREATE TABLE `CLIENTES` (
 --
 
 /*!40000 ALTER TABLE `CLIENTES` DISABLE KEYS */;
-INSERT INTO `CLIENTES` VALUES ('47820080K','Iker Javier','Rodriguez Hernandez','Calle mis cojones p22','iker@gmail.com','434235231','https://maps.app.goo.gl/oqzRBKhwmKerdJyeA   '),('55945354Q','Samy','Hernandez Bramy','Alicante, Calle Oscar Espla Puerta 22','samyhernandez@gmail.com','543534634643','https://maps.app.goo.gl/ALPH7GFjzuhWb1rb7'),('63598206D','Juanma','Garcia Hernandez','Calle alfonso el sabio p22','juanmanuel@gmail.com','555342534222222','https://maps.app.goo.gl/v12nmstxQNqjRCKXA');
+INSERT INTO `CLIENTES` VALUES ('47820080K','Iker Javier','Rodriguez Hernandez','Calle Paseo Mayor p22','iker@gmail.com','434235231','https://maps.app.goo.gl/oqzRBKhwmKerdJyeA   '),('55945354Q','Samy','Hernandez Bramy','Alicante, Calle Oscar Espla Puerta 22','samyhernandez@gmail.com','543534634643','https://maps.app.goo.gl/ALPH7GFjzuhWb1rb7'),('63598206D','Juanma','Garcia Hernandez','Calle alfonso el sabio p22','juanmanuel@gmail.com','555342534222222','https://maps.app.goo.gl/v12nmstxQNqjRCKXA');
 /*!40000 ALTER TABLE `CLIENTES` ENABLE KEYS */;
 
 --
