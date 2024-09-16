@@ -19,8 +19,15 @@ with open('settings.json') as archivo:
 @app.route('/')
 async def index(error=0):
     if "id" in session:
-        clients_list = await clients.get_all_clients()
-        return render_template('index.jinja', session=session, clients=clients_list)
+        page = request.args.get('page', 1, type=int)
+        per_page = 4
+        offset = (page - 1) * per_page
+        
+        clients_list = await clients.get_paged_clients(per_page, offset)
+        total_items = await clients.get_total_client_number()
+        total_pages = (total_items + per_page - 1) // per_page
+        
+        return render_template('index.jinja', session=session, page=page, total_pages=total_pages, clients=clients_list)
     else:
         return render_template('login.jinja', error=error)
 
@@ -37,8 +44,7 @@ async def login():
         session['username'] = user['username']
         session['role'] = user['role']
         
-        return redirect(url_for('index'))
-    
+        return redirect(url_for('index'))  
     else:
         return redirect(url_for('index', error=error_cod))    
     
@@ -157,20 +163,43 @@ async def client_details(dni):
 async def filter_clients():
     if 'id' in session:
         if session['role'] == 'Empleado' or session['role'] == 'Administrador':
+            
+            page = request.args.get('page', 1, type=int)
+            per_page = 4
+            offset = (page - 1) * per_page
+            total_pages = 0
+            total_items = 0
+            
             clientes = []
             filterDni = request.form['filterDni']
             filterName = request.form['filterName']
             
             if filterDni or filterName:
                 if filterDni and not filterName:
-                    clientes = await clients.filter_client_action(None, filterDni)
-                elif not filterDni and filterName:
-                    clientes = await clients.filter_client_action(filterName, None)
-                elif filterDni and filterName:
-                    clientes = await clients.filter_client_action(filterName, filterDni)
+                    clientes = await clients.filter_client_action(None, filterDni, per_page, offset)
+                    total_items = await clients.get_number_filtered_clients(None, filterDni)
+                    total_pages = 1
                 
-                return render_template('index.jinja', filterName=filterName, filterDni=filterDni, clients=clientes, session=session)
-            
+                elif not filterDni and filterName:
+                    clientes = await clients.filter_client_action(filterName, None, per_page, offset)
+                    total_items = await clients.get_number_filtered_clients(filterName, None)
+                    total_pages = (total_items + per_page - 1) // per_page
+                    
+                elif filterDni and filterName:
+                    clientes = await clients.filter_client_action(filterName, filterDni, per_page, offset)
+                    total_items = await clients.get_number_filtered_clients(filterName, filterDni)
+                    total_pages = (total_items + per_page - 1) // per_page
+                
+                return render_template( 
+                    'index.jinja', 
+                    filterName=filterName, 
+                    filterDni=filterDni, 
+                    clients=clientes, 
+                    session=session,
+                    total_pages=total_pages, 
+                    page=page
+                )
+
             else:
                 return redirect(url_for('index'))
         else:
@@ -178,16 +207,11 @@ async def filter_clients():
     else:
         return redirect(url_for('index'))
 
-
-
-
 """
 ----------------------------------------------------------------------------------------------
     [ USUARIOS ]
 ----------------------------------------------------------------------------------------------
 """
-
-
 
 '''
     Genera la plantilla donde se muestra una tabla con todos los usuarios.
@@ -234,8 +258,6 @@ async def new_user():
         return redirect(url_for('index'))
 
 
-
-
 '''
     Borra a un usuario de la base de datos.
 '''
@@ -249,8 +271,6 @@ async def delete_user(id):
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
-
-
 
 
 '''
