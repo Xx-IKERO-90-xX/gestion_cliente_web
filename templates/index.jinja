@@ -60,8 +60,8 @@
         <a href="{{url_for('client_details', dni=client['dni'])}}"
           class="btn btn-secondary"><strong>Detalles</strong></a>
         {%if session['role'] == 'Administrador'%}
-        <a href="{{url_for('edit_client', dni=client['dni'])}}" class="btn btn-primary"><strong>Editar</strong></a>
-        <a href="{{url_for('delete_client', dni=client['dni'])}}" class="btn btn-danger"><strong>Eliminar</strong></a>
+          <a href="{{url_for('edit_client', dni=client['dni'])}}" class="btn btn-primary"><strong>Editar</strong></a>
+          <a href="{{url_for('delete_client', dni=client['dni'])}}" class="btn btn-danger"><strong>Eliminar</strong></a>
         {%endif%}
       </td>
     </tr>

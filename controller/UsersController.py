@@ -15,6 +15,7 @@ if app_route not in sys.path:
 import app
 
 
+
 '''
     Obtiene todos los datos de un usuario por nombre de usuario
 '''
@@ -29,9 +30,10 @@ async def get_user_by_username(username):
     
     result = cursor.fetchall()
     json_result = await database.covert_to_json(cursor, result)
-    connection.close()
     
+    connection.close()
     return json_result[0]
+
 
 '''
     Obtiene y devuelve todos los usuarios de la base de datos
@@ -44,8 +46,8 @@ async def get_users():
     
     result = cursor.fetchall()
     json_result = await database.covert_to_json(cursor, result)
-    connection.close()
     
+    connection.close()
     return json_result
 
 
@@ -86,21 +88,22 @@ async def delete_user(id):
 '''
     Obtiene los usuarios dependiento del texto que se le pase.
 '''
-async def search_users(text):
+async def search_users(text, per_page, offset):
     connection = await database.open_database_connection()
     cursor = connection.cursor()
     
     cursor.execute(f"""
         SELECT * FROM USUARIOS
-        WHERE username LIKE '%{text}%';
+        WHERE username LIKE '%{text}%'
+        LIMIT {per_page} OFFSET {offset};
     """)
     
     result = cursor.fetchall()
     json_result = await database.covert_to_json(cursor, result)
     
     connection.close()
-    
     return json_result
+
 
 '''
     Comprueba si el nombre del usuario esta en uso.
@@ -114,3 +117,53 @@ async def user_name_in_use(username):
             inUse = True
     
     return inUse
+
+
+'''
+    Obtiene todos los usuarios por pagina
+'''
+async def get_paged_users(per_page, offset):
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute(f"""
+        SELECT * FROM USUARIOS
+        LIMIT {per_page} OFFSET {offset};               
+    """)
+    
+    result = cursor.fetchall()
+    
+    json_result = await database.covert_to_json(cursor, result)
+    connection.close()
+    
+    return json_result
+
+
+'''
+    Obtiene el nuemro de todos los usuarios almacenados en la base de datos
+'''
+async def get_total_users_number():
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute("SELECT COUNT(*) FROM USUARIOS;")
+    
+    result = cursor.fetchone()[0]
+    connection.close()
+    
+    return result
+
+'''
+    Obtiene el numero de usuarios filtrados
+'''
+async def get_filtered_users_number(text):
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute(f"""
+        SELECT COUNT(*) FROM USUARIOS
+        WHERE username LIKE '%{text}%';
+    """)
+    
+    result = cursor.fetchone()[0]
+    return result

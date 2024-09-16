@@ -27,7 +27,13 @@ async def index(error=0):
         total_items = await clients.get_total_client_number()
         total_pages = (total_items + per_page - 1) // per_page
         
-        return render_template('index.jinja', session=session, page=page, total_pages=total_pages, clients=clients_list)
+        return render_template(
+            'index.jinja', 
+            session=session, 
+            page=page, 
+            total_pages=total_pages, 
+            clients=clients_list
+        )
     else:
         return render_template('login.jinja', error=error)
 
@@ -85,7 +91,11 @@ async def new_client():
                 
                     return redirect(url_for('index'))
                 else:
-                    return render_template('clients/create.jinja', errors=errors, session=session)
+                    return render_template(
+                        'clients/create.jinja', 
+                        errors=errors, 
+                        session=session
+                    )
         else:
             return redirect(url_for('index'))
     else:
@@ -119,7 +129,11 @@ async def edit_client(dni):
         if session['role'] == 'Administrador':
             if request.method == "GET":
                 client = await clients.get_client_by_dni(dni)
-                return render_template('clients/edit.jinja', client=client, session=session)
+                return render_template(
+                    'clients/edit.jinja', 
+                    client=client, 
+                    session=session
+                )
             else:
                 nombre = request.form['nombre']
                 apellidos = request.form['apellidos']
@@ -134,7 +148,12 @@ async def edit_client(dni):
                 else:
                     error_msg = "El formato del correo es invalido."
                     client = await clients.get_client_by_dni(dni)
-                    return render_template('clients/edit.jinja', error=error_msg, client=client, session=session)                
+                    return render_template(
+                        'clients/edit.jinja', 
+                        error=error_msg, 
+                        client=client, 
+                        session=session
+                    )                
         else:
             return redirect(url_for('index'))
     else:
@@ -149,7 +168,11 @@ async def client_details(dni):
     if 'id' in session:
         if session['role'] == 'Empleado' or session['role'] == 'Administrador':
             client = await clients.get_client_by_dni(dni)
-            return render_template('clients/detalle.jinja', client=client, session=session)
+            return render_template(
+                'clients/detalle.jinja', 
+                client=client, 
+                session=session
+            )
         else:
             return redirect(url_for('index'))
     else:
@@ -220,8 +243,21 @@ async def filter_clients():
 async def index_users():
     if 'id' in session:
         if session['role'] == "Administrador":
-            usuarios = await users.get_users()
-            return render_template('users/index.jinja', users=usuarios, session=session)
+            page = request.args.get('page', 1, type=int)
+            per_page = 4
+            offset = (page - 1) * per_page
+            
+            usuarios = await users.get_paged_users(per_page, offset)
+            total_items = await users.get_total_users_number()
+            total_pages = (total_items + per_page - 1) // per_page
+            
+            return render_template(
+                'users/index.jinja', 
+                users=usuarios, 
+                session=session, 
+                total_pages=total_pages, 
+                page=page
+            )
         else:
             return redirect(url_for('index'))
     else:
@@ -245,10 +281,18 @@ async def new_user():
                 
                 if await users.user_name_in_use(username):
                     error_msg = f"El nombre de usuario {username} esta en uso."
-                    return render_template('users/create.jinja', error=error_msg, session=session)
+                    return render_template(
+                        'users/create.jinja', 
+                        error=error_msg, 
+                        session=session
+                    )
                 elif passwd != passwd2:
                     error_msg = "Ambas contraseñas deben ser iguales para continuar."
-                    return render_template('users/create.jinja', error=error_msg, session=session)
+                    return render_template(
+                        'users/create.jinja', 
+                        error=error_msg,
+                        session=session
+                    )
                 else:
                     await users.create_user(username, passwd)
                     return redirect(url_for('index_users'))
@@ -282,8 +326,23 @@ async def filter_users():
         if session['role'] == "Administrador":
             text = request.form['filterText']
             if text:
-                usuarios = await users.search_users(text)
-                return render_template('users/index.jinja', users=usuarios, text=text, session=session)
+                page = request.args.get('page', 1, type=int)
+                per_page = 4
+                offset = (page - 1) * per_page
+                
+                usuarios = await users.search_users(text, per_page, offset)
+                total_items = await users.get_filtered_users_number(text)
+                total_pages = (total_items + per_page - 1) // per_page
+                
+                
+                return render_template(
+                    'users/index.jinja', 
+                    users=usuarios, 
+                    text=text, 
+                    session=session, 
+                    total_pages=total_pages, 
+                    page=page
+                )
             else:
                 return redirect(url_for('index_users'))
         else:
