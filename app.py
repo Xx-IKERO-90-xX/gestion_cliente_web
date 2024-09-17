@@ -352,4 +352,8 @@ async def filter_users():
     
     
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(
+        debug=True,
+        host=settings['flask']['host'],
+        port=settings['flask']['port']
+    )

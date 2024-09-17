@@ -3,7 +3,11 @@
         "host": "",
         "user": "",
         "password": "",
-        "db": ""
+        "db": "GESTION_USUARIOS"
+    },
+    "flask": {
+        "host": "0.0.0.0",
+        "port": 5000
     },
     "config": {
         "users": {
