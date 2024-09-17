@@ -20,7 +20,7 @@ with open('settings.json') as archivo:
 async def index(error=0):
     if "id" in session:
         page = request.args.get('page', 1, type=int)
-        per_page = 4
+        per_page = settings['config']['clients']['per_page']
         offset = (page - 1) * per_page
         
         clients_list = await clients.get_paged_clients(per_page, offset)
@@ -188,7 +188,7 @@ async def filter_clients():
         if session['role'] == 'Empleado' or session['role'] == 'Administrador':
             
             page = request.args.get('page', 1, type=int)
-            per_page = 4
+            per_page = settings['config']['clients']['per_page']
             offset = (page - 1) * per_page
             total_pages = 0
             total_items = 0
@@ -244,7 +244,7 @@ async def index_users():
     if 'id' in session:
         if session['role'] == "Administrador":
             page = request.args.get('page', 1, type=int)
-            per_page = 4
+            per_page = settings['config']['users']['per_page']
             offset = (page - 1) * per_page
             
             usuarios = await users.get_paged_users(per_page, offset)
@@ -327,7 +327,7 @@ async def filter_users():
             text = request.form['filterText']
             if text:
                 page = request.args.get('page', 1, type=int)
-                per_page = 4
+                per_page = settings['config']['users']['per_page']
                 offset = (page - 1) * per_page
                 
                 usuarios = await users.search_users(text, per_page, offset)

@@ -1,8 +1,16 @@
 {
     "database": {
-        "host": "dominio o ip",
-        "user": "usuarios",
-        "password": "contraseña",
-        "db": "GESTION_USUARIOS"
+        "host": "",
+        "user": "",
+        "password": "",
+        "db": ""
+    },
+    "config": {
+        "users": {
+            "per_page": 5
+        },
+        "clients": {
+            "per_page": 5
+        }
     }
 }
