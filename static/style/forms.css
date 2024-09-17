@@ -10,6 +10,11 @@
     margin-top: 200px;
 }
 
+@media (max-width: 763px) {
+    .formLogin {
+        width: 100%;
+    }
+}
 .formLogin h1 {
     color: #4CAF50;
 }
