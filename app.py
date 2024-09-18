@@ -1,12 +1,13 @@
 import os
 import sys
-from flask import request, Flask, render_template, redirect, session, sessions, url_for, send_file
+from flask import request, Flask, render_template, redirect, session, sessions, url_for, send_file, flash
 import mysql.connector
 import json
 import controller.AccessController as access
 import controller.DatabaseController as database
 import controller.UsersController as users
 import controller.ClientsController as clients
+import controller.BackupController as backups
 import io
 import csv
 
@@ -90,8 +91,8 @@ async def new_client():
                 
                 if len(errors) == 0:
                     await clients.create_client(dni, nombre, apellidos, direccion, correo, telefono, googlemap_link)
-                
                     return redirect(url_for('index'))
+                
                 else:
                     return render_template(
                         'clients/create.jinja', 
@@ -233,6 +234,9 @@ async def filter_clients():
         return redirect(url_for('index'))
     
 
+'''
+    Descarga un archivo csv con todos los clientes almacenados en la base de datos.
+'''
 @app.route('/clientes/download')
 async def download_csv_clients():
     if 'id' in session:
@@ -260,6 +264,36 @@ async def download_csv_clients():
                 download_name='clientes_backup.csv'
             ) 
 
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+
+'''
+    Sube un archivo.csv y lo almacena en la base de datos en la tabla de Clientes
+'''
+@app.route('/clientes/upload', methods=['POST'])
+async def upload_clients_csv():
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            if 'file' not in request.files:
+                print('No se ha subido ningún archivo.')
+                return redirect(url_for('index'))
+    
+            file_csv = request.files['file']
+
+            if file_csv.filename == '':
+                print('No se ha seleccionado ningun archivo.')
+                return redirect(url_for('index'))
+
+            if file_csv and file_csv.filename.endswith('.csv'):
+                await backups.upload_csv_clients(file_csv)
+                return redirect(url_for('index'))
+            
+            else:
+                return redirect(url_for('index'))
+            
         else:
             return redirect(url_for('index'))
     else:

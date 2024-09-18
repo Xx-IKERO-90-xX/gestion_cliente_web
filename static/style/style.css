@@ -55,3 +55,7 @@ table {
     height: 200px;
     overflow-y: scroll;
 }
+
+.inputfile {
+    color: white;
+}

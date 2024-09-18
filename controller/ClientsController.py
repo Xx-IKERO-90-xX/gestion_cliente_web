@@ -3,6 +3,7 @@ import sys
 from flask import request, Flask, render_template, redirect, session, sessions, url_for
 import mysql.connector
 import controller.DatabaseController as database
+import re
 
 sys.path.append("..")
 
@@ -11,7 +12,6 @@ if app_route not in sys.path:
     sys.path.insert(0, app_route)
 
 import app
-
 
 # Obtenemos todos los clientes registrados en la DB
 async def get_all_clients():
@@ -195,12 +195,16 @@ async def gmail_in_use(gmail):
 '''
 async def validate_client(gmail, dni):
     errors = []
-    
+    regex = r'^\d{8}[A-Z]$'
+
     if await gmail_has_two_parts(gmail) == False:
         errors.append("El formato del correo no es valido.")
+    
     if dni != None:
         if await dni_in_use(dni):
             errors.append("El DNI introducido esta en uso.")
+        if not re.match(regex, dni):
+            errors.append("El formato del DNI es incorrecto.")
     
     return errors
 
@@ -305,5 +309,22 @@ async def get_number_filtered_clients(filterName=None, filterDni=None):
     result = cursor.fetchone()[0]
     connection.close()
     
+    return result
+
+
+'''
+    Comprueba si el cliente existe o no.
+'''
+async def client_exists(dni):
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(f"""
+        SELECT COUNT(*) FROM CLIENTES
+        WHERE dni = '{dni}';
+    """)
+    result = cursor.fetchone()[0]
+    connection.close()
+
     return result
     
