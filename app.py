@@ -1,12 +1,14 @@
 import os
 import sys
-from flask import request, Flask, render_template, redirect, session, sessions, url_for
+from flask import request, Flask, render_template, redirect, session, sessions, url_for, send_file
 import mysql.connector
 import json
 import controller.AccessController as access
 import controller.DatabaseController as database
 import controller.UsersController as users
 import controller.ClientsController as clients
+import io
+import csv
 
 app = Flask(__name__)
 app.secret_key = "tr4rt34t334yt"
@@ -225,6 +227,39 @@ async def filter_clients():
 
             else:
                 return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+    
+
+@app.route('/clientes/download')
+async def download_csv_clients():
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            connection = await database.open_database_connection()
+            cursor = connection.cursor()
+
+            cursor.execute("SELECT * FROM CLIENTES;")
+
+            column_names = [i[0] for i in cursor.description]
+
+            output = io.StringIO()
+            writer = csv.writer(output)
+    
+            writer.writerow(column_names)
+
+            for row in cursor:
+                writer.writerow(row)
+    
+
+            return send_file(
+                io.BytesIO(output.getvalue().encode()),
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='clientes_backup.csv'
+            ) 
+
         else:
             return redirect(url_for('index'))
     else:
