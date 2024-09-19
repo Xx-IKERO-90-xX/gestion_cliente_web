@@ -25,36 +25,61 @@
             </div>
             <div class="col col-sm-4">
                 <label for="nameInput" class="form-label"><strong>Nombre</strong></label>
-                <input type="text" name="nombre" class="form-control" id="nameInput" required>
+                {%if nombre%}
+                    <input type="text" name="nombre" class="form-control" id="nameInput" value="{{nombre}}" required>
+                {%else%}
+                    <input type="text" name="nombre" class="form-control" id="nameInput" required>
+                {%endif%}
             </div>
             <div class="col col-sm-4">
                 <label for="subnameInput" class="form-label"><strong>Apellidos</strong></label>
-                <input type="text" name="apellidos" class="form-control" id="subnameInput" required>
+                {%if apellidos%}
+                    <input type="text" name="apellidos" class="form-control" id="subnameInput" value="{{apellidos}}" required>
+                {%else%}
+                    <input type="text" name="apellidos" class="form-control" id="subnameInput" required>                
+                {%endif%}
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-12">
                 <label for="direccionInput" class="form-label"><strong>Direccion</strong></label>
-                <input type="text" name="direccion" class="form-control" id="direccionInput" required>
+                {%if direccion%}
+                    <input type="text" name="direccion" class="form-control" id="direccionInput" value="{{direccion}}" required>
+                {%else%}
+                    <input type="text" name="direccion" class="form-control" id="direccionInput" required>                    
+                {%endif%}
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-6">
                 <label for="emailInput"><strong>Correo electronico</strong></label>
-                <input type="text" name="email" class="form-control" id="emailInput" required>
+                {%if correo%}
+                    <input type="text" name="email" class="form-control" id="emailInput" value="{{correo}}" required>
+                {%else%}
+                    <input type="text" name="email" class="form-control" id="emailInput" required>                
+                {%endif%}
             </div>
             <div class="col col-6">
                 <label for="telefonoInput"><strong>Telefono</strong></label>
-                <input type="text" name="telefono" class="form-control" id="telefonoInput" required>
+                {%if telefono%}
+                    <input type="text" name="telefono" class="form-control" id="telefonoInput" value="{{telefono}}" required>
+                {%else%}
+                    <input type="text" name="telefono" class="form-control" id="telefonoInput" required>
+                {%endif%}
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col col-12">
                 <label for="googleLinkInput"><strong>Enlace de Google Maps</strong></label>
-                <input type="text" name="googlemap_link" class="form-control" id="googleLinkInput" required>
+                {%if  googlemap_link%}
+                    <input type="text" name="googlemap_link" class="form-control" id="googleLinkInput" value="{{googlemap_link}}" required>
+                {%else%}
+                    <input type="text" name="googlemap_link" class="form-control" id="googleLinkInput" required>
+                {%endif%}
+            
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@ async def get_all_notes():
     connection = await database.open_database_connection()
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM NOTES;")
+    cursor.execute("SELECT * FROM NOTAS;")
 
     result = cursor.fetchall()
 
@@ -102,3 +102,16 @@ async def delete_note(id):
 
     connection.commit()
     connection.close()
+
+'''
+    Comprueba si la nota introducida existe.
+'''
+async def note_exists(id, dni, texto):
+    exists = False
+    notas = await get_all_notes()
+
+    for nota in notas:
+        if nota['id'] == id and nota['dni'] == dni and nota['texto'] == texto:
+            exists = True
+    
+    return exists

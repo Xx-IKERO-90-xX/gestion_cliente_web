@@ -457,7 +457,9 @@ async def new_note(dni):
     else:
         return redirect(url_for('index'))
 
-
+'''
+    Borra una nota especifica.
+'''
 @app.route('/notas/delete/<int:id>', methods=['GET'])
 async def delete_nota(id):
     if 'id' in session:
@@ -469,6 +471,67 @@ async def delete_nota(id):
     else:
         return redirect(url_for('index'))
 
+
+'''
+    Descarga las notas en un archivo .csv
+'''
+@app.route('/notas/download')
+async def download_csv_notes():
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            connection = await database.open_database_connection()
+            cursor = connection.cursor()
+
+            cursor.execute("SELECT * FROM NOTAS;")
+
+            column_names = [i[0] for i in cursor.description]
+
+            output = io.StringIO()
+            writer = csv.writer(output)
+
+            writer.writerow(column_names)
+            
+            for row in cursor:
+                writer.writerow(row)
+            
+            return send_file(
+                io.BytesIO(output.getvalue().encode()),
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='notas_backup.csv'
+            )
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+'''
+    Sube el archivo .csv que contiene todas las notas.
+'''
+@app.route('/notas/upload', methods=['POST'])
+async def upload_notes_csv():
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            if 'file' not in request.files:
+                print('No se ha subido ningún archivo.')
+                return redirect(url_for('index'))
+    
+            file_csv = request.files['file']
+
+            if file_csv.filename == '':
+                print('No se ha seleccionado ningun archivo.')
+                return redirect(url_for('index'))
+
+            if file_csv and file_csv.filename.endswith('.csv'):
+                await backups.upload_csv_notes(file_csv)
+                return redirect(url_for('index'))
+            
+            else:
+                return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(

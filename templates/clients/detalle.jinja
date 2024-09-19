@@ -20,18 +20,17 @@
         <br><br>
         <h3>Contacto</h3>
         <div class="data">
-            <strong>Telefono: </strong><span>{{client['telefono']}}</span><br>
-            <strong>Correo: </strong><span>{{client['email']}}</span>
+            <strong>Telefono: </strong><a href="tel:+34{{client['telefono']}}">+34 {{client['telefono']}}</a><br>
+            <strong>Correo: </strong><a href="mailto:{{client['email']}}">{{client['email']}}</a>
         </div>
         <br><br>
         <h3>Ubicación</h3>
         <div class="data">
             <strong>Direccion: </strong><span>{{client['direccion']}}</span><br>
             <strong>Enlace Google Maps: </strong><span><strong><a
-                        href="{{client['googlemap_link']}}">{{client['googlemap_link']}}</a></strong></span>
+                href="{{client['googlemap_link']}}">{{client['googlemap_link']}}</a></strong></span>
         </div>
     </div>
-
     <!-- Seccion de Notas -->
     <style>
         .sectionNotes .row {
