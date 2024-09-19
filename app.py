@@ -100,7 +100,13 @@ async def new_client():
                 else:
                     return render_template(
                         'clients/create.jinja', 
-                        errors=errors, 
+                        errors=errors,
+                        nombre=nombre,
+                        apellidos=apellidos,
+                        direccion=direccion,
+                        correo=correo,
+                        telefono=telefono,
+                        googlemap_link=googlemap_link,
                         session=session
                     )
         else:
