@@ -153,6 +153,7 @@ async def get_total_users_number():
     
     return result
 
+
 '''
     Obtiene el numero de usuarios filtrados
 '''
@@ -167,3 +168,5 @@ async def get_filtered_users_number(text):
     
     result = cursor.fetchone()[0]
     return result
+
+

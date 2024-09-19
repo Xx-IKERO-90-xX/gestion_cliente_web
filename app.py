@@ -8,6 +8,7 @@ import controller.DatabaseController as database
 import controller.UsersController as users
 import controller.ClientsController as clients
 import controller.BackupController as backups
+import controller.NotasController as notes
 import io
 import csv
 
@@ -30,10 +31,13 @@ async def index(error=0):
         total_items = await clients.get_total_client_number()
         total_pages = (total_items + per_page - 1) // per_page
         
+        notas = await notes.get_notes_with_clients()
+
         return render_template(
             'index.jinja', 
             session=session, 
-            page=page, 
+            page=page,
+            notas=notas, 
             total_pages=total_pages, 
             clients=clients_list
         )
@@ -171,8 +175,11 @@ async def client_details(dni):
     if 'id' in session:
         if session['role'] == 'Empleado' or session['role'] == 'Administrador':
             client = await clients.get_client_by_dni(dni)
+            notas = await notes.get_notes_with_clients_by_dni(dni)
+
             return render_template(
-                'clients/detalle.jinja', 
+                'clients/detalle.jinja',
+                notas=notas, 
                 client=client, 
                 session=session
             )
@@ -403,7 +410,6 @@ async def filter_users():
                 total_items = await users.get_filtered_users_number(text)
                 total_pages = (total_items + per_page - 1) // per_page
                 
-                
                 return render_template(
                     'users/index.jinja', 
                     users=usuarios, 
@@ -419,7 +425,45 @@ async def filter_users():
     else:
         return redirect(url_for('index'))
     
-    
+
+
+
+
+"""
+----------------------------------------------------------------------------------------------
+    [ NOTAS ]
+----------------------------------------------------------------------------------------------
+"""
+
+
+'''
+    Creamos una nueva nota en un usuario.
+'''
+@app.route('/notas/new/<string:dni>', methods=['POST'])
+async def new_note(dni):
+    if 'id' in session:
+        text = request.form['nota']
+        if text and text != "":
+            await notes.new_note(dni, text)
+            return redirect(url_for('client_details', dni=dni))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/notas/delete/<int:id>', methods=['GET'])
+async def delete_nota(id):
+    if 'id' in session:
+        if session['role'] == 'Administrador':
+            await notes.delete_note(id)
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+
 if __name__ == "__main__":
     app.run(
         debug=True,

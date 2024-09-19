@@ -4,41 +4,41 @@
 
 {%block content%}
 
+<link rel="stylesheet" href="/static/style/forms.css">
+
 <style>
+  .modalForm {
+    background: rgb(51, 51, 51);
+  }
   @media (max-width: 763px) {
     td div {
       width: 150px;
       height: 30px;
       overflow-y: scroll;
     }
+    td {
+      font-size: 12px;
+    }
+    td .btn {
+      font-size: 10px;
+    }
+    .filterForm {
+      font-size: 10px;
+    }
+    .filterForm a {
+      font-size: 10px;
+    }
+    .filterForm button {
+      font-size: 11px;
+    }
   }
 </style>
-<br><br><br><br>
+<br><br>
 <link href="/static/style/style.css" rel="stylesheet">
-<form class="form-inline filterForm" method="post" action="{{url_for('filter_clients')}}">
-  <div class="row">
-    <div class="col col-7">
-      {%if filterName%}
-      <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos"
-        value="{{filterName}}">
-      {%else%}
-      <input type="text" name="filterName" class="form-control" placeholder="Buscar por nombre y apellidos">
-      {%endif%}
-    </div>
-    <div class="col col-4">
-      {%if filterDni%}
-      <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI" value="{{filterDni}}">
-      {%else%}
-      <input type="text" name="filterDni" class="form-control" placeholder="Buscar por DNI">
-      {%endif%}
-    </div>
-    <div class="col col-12">
-      <button class="btn btn-success" type="submit"><strong>Buscar</strong></button>
-    </div>
-  </div>
-</form>
+{%if session['role'] == "Administrador"%}
 <br><br><br>
-<form method="post" class="form-inline filterForm" action="{{url_for('upload_clients_csv')}}" enctype="multipart/form-data">
+<form method="post" class="form-inline filterForm" action="{{url_for('upload_clients_csv')}}"
+  enctype="multipart/form-data">
   <input type="file" name="file" class="inputfile" accept=".csv">
   <a href="{{url_for('download_csv_clients')}}" class="btn btn-primary">
     <strong>
@@ -52,8 +52,34 @@
   </a>
   <button type="submit" class="btn btn-primary"><strong>Subir</strong></button>
 </form>
+{%endif%}
 <br><br><br>
+<form class="form-inline filterForm" method="post" action="{{url_for('filter_clients')}}">
+  <div class="row">
+    <div class="col col-7">
+      {%if filterName%}
+      <input type="text" name="filterName" class="form-control" placeholder="Nombre y Apellidos"
+        value="{{filterName}}">
+      {%else%}
+      <input type="text" name="filterName" class="form-control" placeholder="Nombre y Apellidos">
+      {%endif%}
+    </div>
+    <div class="col col-4">
+      {%if filterDni%}
+      <input type="text" name="filterDni" class="form-control" placeholder="DNI" value="{{filterDni}}">
+      {%else%}
+      <input type="text" name="filterDni" class="form-control" placeholder="DNI">
+      {%endif%}
+    </div>
+    <div class="col col-12">
+      <button class="btn btn-success" type="submit"><strong>Buscar</strong></button>
+    </div>
+  </div>
+</form>
+<br><br>
 
+
+<!-- TABLA DE REGISTRO DE CLIENTES -->
 <table class="table table-dark table-striped">
   <thead class="thead-dark">
     <tr>
@@ -73,7 +99,7 @@
   <tbody class="tableContent">
     {%for client in clients%}
     <tr>
-      <td>{{client['apellidos']}}, {{client['nombre']}}</td>
+      <td>{{client['nombre']}} {{client['apellidos']}}</td>
       <td>
         <div>{{client['email']}}</div>
       </td>
@@ -81,11 +107,35 @@
         <a href="{{url_for('client_details', dni=client['dni'])}}"
           class="btn btn-secondary"><strong>Detalles</strong></a>
         {%if session['role'] == 'Administrador'%}
-        <a href="{{url_for('edit_client', dni=client['dni'])}}" class="btn btn-primary"><strong>Editar</strong></a>
-        <a href="{{url_for('delete_client', dni=client['dni'])}}" class="btn btn-danger"><strong>Eliminar</strong></a>
+          <a href="{{url_for('edit_client', dni=client['dni'])}}" class="btn btn-primary"><strong>Editar</strong></a>
+          <a href="{{url_for('delete_client', dni=client['dni'])}}" class="btn btn-danger"><strong>Eliminar</strong></a>
+          <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#createNoteModal_{{client['dni']}}"><strong>Nueva Nota</strong></button>
         {%endif%}
       </td>
     </tr>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createNoteModal_{{client['dni']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="background: rgb(104, 104, 104);">
+          <div class="modal-body modalForm">
+            <form class="modalForm" method="post" action="{{url_for('new_note', dni=client['dni'])}}">
+              <h2><strong style="color: white;">Nota</strong></h2><br>
+              <textarea name="nota" style="
+                width: 100%;
+                height: 200px;
+                padding: 5px;
+                resize: none;
+                text-align: left;
+              ">
+              </textarea>
+              <br><br>
+              <button type="subbmit" class="btn btn-success"><strong>Crear</strong></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     {%endfor%}
   </tbody>
 </table>
@@ -118,5 +168,84 @@
       {% endif %}
   </ul>
 </nav>
+
+<!-- Seccion de Notas -->
+<style>
+  .sectionNotes {
+    margin: auto;
+    height: 500px;
+  }
+  .sectionNotes .row {
+    margin: auto;
+
+  }
+
+  .sectionNotes .col {
+    background:rgb(134, 134, 134);
+    height: 200px;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+  }
+  .sectionNotes .col p {
+    color: white;
+    width: 100%;
+    height: 120px;
+    background: rgb(70, 70, 70);
+    padding: 5px;
+    border-radius: 10px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+  }
+  .sectionNotes .col .clientName {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    overflow-y: scroll;
+    padding: 5px;
+    width: 20px;
+
+  }
+  .sectionNotes .col .clientName:hover {
+    color: blue;
+  }
+  .deleteNote {
+    color: black;
+    font-size: 22px;
+    margin-left: 5px;
+  }
+  .deleteNote:hover {
+    color: red;
+    font-size: 20px;
+  }
+
+</style>
+
+<br><br><br>
+<div class="sectionNotes">
+  <div class="row">
+    {%for note in notas%}
+      <div class="col col-4 col-sm-4 col-lg-2">
+        <p>{{note['nota']}}</p>
+        <div style="
+          width: 250px;
+          ovrflow-x: scroll;
+        "> 
+          <img src="/static/images/icons/user.png" width="50">
+          <a class="clientName" href="{{url_for('client_details', dni=note['dni'])}}">{{note['nombre']}}</a>
+          {%if session['role'] == 'Administrador'%}
+          <a href="{{url_for('delete_nota', id=note['id'])}}" class="deleteNote">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+            </svg>
+          </a>
+          {%endif%}
+        </div>
+      </div>
+    {%endfor%}
+  </div>
+</div>
+<br><br><br>
 
 {%endblock%}

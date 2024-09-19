@@ -327,4 +327,21 @@ async def client_exists(dni):
     connection.close()
 
     return result
-    
+
+
+
+'''
+    Obtiene los clientes de la base de datos pero solo el nombre, apellidos y dni.
+'''
+async def get_clients_dni_name():
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT dni, nombre, apellidos FROM CLIENTES;")
+
+    result = cursor.fetchall()
+
+    json_result = await database.covert_to_json(cursor, result)
+
+    connection.close() 
+    return json_result
