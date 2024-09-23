@@ -35,13 +35,16 @@ async def get_all_notes():
 '''
     Obtiene todas las notas enlazadas a sus respectivos clientes.
 '''
-async def get_notes_with_clients():
+async def get_last_client_note(dni):
     connection = await database.open_database_connection()
     cursor = connection.cursor()
 
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT CLIENTES.nombre AS nombre, CLIENTES.apellidos AS apellidos, CLIENTES.dni as dni, NOTAS.texto AS nota, NOTAS.id AS id
-        FROM CLIENTES INNER JOIN NOTAS ON CLIENTES.dni = NOTAS.dni;
+        FROM CLIENTES INNER JOIN NOTAS ON CLIENTES.dni = NOTAS.dni
+        WHERE CLIENTES.dni = '{dni}' AND NOTAS.dni = '{dni}'
+        ORDER BY NOTAS.id DESC
+        LIMIT 1;
     """)
 
     result = cursor.fetchall()
@@ -115,3 +118,20 @@ async def note_exists(id, dni, texto):
             exists = True
     
     return exists
+
+
+'''
+    Edita la nota seleccionada.
+'''
+async def update_note(id, text):
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(f"""
+        UPDATE NOTAS
+            SET texto = '{text}'
+        WHERE id = {id};
+    """)
+
+    connection.commit()
+    connection.close()

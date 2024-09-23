@@ -31,16 +31,31 @@ async def index(error=0):
         total_items = await clients.get_total_client_number()
         total_pages = (total_items + per_page - 1) // per_page
         
-        notas = await notes.get_notes_with_clients()
+        clients_full_list = await clients.get_all_clients()
+        notes_snea_peek = []
+        
+        for client in clients_full_list:
+            note = await notes.get_last_client_note(client['dni'])
+            if len(note) > 0:
+                notes_snea_peek.append(note[0])
 
-        return render_template(
-            'index.jinja', 
-            session=session, 
-            page=page,
-            notas=notas, 
-            total_pages=total_pages, 
-            clients=clients_list
-        )
+        if len(notes_snea_peek) > 0:
+            return render_template(
+                'index.jinja', 
+                session=session, 
+                page=page,
+                notas=notes_snea_peek, 
+                total_pages=total_pages, 
+                clients=clients_list
+            )
+        else:
+            return render_template(
+                'index.jinja', 
+                session=session, 
+                page=page,
+                total_pages=total_pages, 
+                clients=clients_list
+            )
     else:
         return render_template('login.jinja', error=error)
 
@@ -460,12 +475,12 @@ async def new_note(dni):
 '''
     Borra una nota especifica.
 '''
-@app.route('/notas/delete/<int:id>', methods=['GET'])
-async def delete_nota(id):
+@app.route('/notas/delete/<string:dni>/<int:id>', methods=['GET'])
+async def delete_nota(dni, id):
     if 'id' in session:
         if session['role'] == 'Administrador':
             await notes.delete_note(id)
-            return redirect(url_for('index'))
+            return redirect(url_for('client_details', dni=dni, id=id))
         else:
             return redirect(url_for('index'))
     else:
@@ -532,6 +547,22 @@ async def upload_notes_csv():
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
+    
+'''
+    Ruta que actualiza una nota especifica de un cliente.
+'''
+@app.route('/notas/edit/<string:dni>/<int:id>', methods=['POST'])
+async def update_note(dni, id):
+    if 'id' in session:
+        if session['role'] == "Administrador":
+            note = request.form['note']
+            await notes.update_note(id, note)
+            return redirect(url_for("client_details", dni=dni))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+        
 
 if __name__ == "__main__":
     app.run(
