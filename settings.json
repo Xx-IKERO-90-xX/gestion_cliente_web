@@ -11,10 +11,10 @@
     },
     "config": {
         "users": {
-            "per_page": 5
+            "per_page": 25
         },
         "clients": {
-            "per_page": 5
+            "per_page": 25
         }
     }
 }

@@ -5,6 +5,10 @@
 {%block content%}
 
 <style>
+    .tableDiv {
+        width: 100%;
+        overflow-y: scroll;
+    }
     @media (max-width: 763px) {
         td div {
             width: 150px;
@@ -35,6 +39,7 @@
         .form-control {
             font-size: 10px;
         }
+
         .roleRow {
             font-size: 8px;
             font-weight: bold;
@@ -62,8 +67,8 @@
     </div>
 </form>
 <br><br><br>
-
-<table class="table table-dark table-striped" style="overflow-y: scroll; height: 200px;">
+<div >
+<table class="table table-dark table-striped" class="tableDiv">
     <thead>
         <tr>
             <th>
@@ -91,6 +96,7 @@
         {%endfor%}
     </tbody>
 </table>
+</div>
 
 <nav aria-label="Page navigation" class="paginador">
     <ul class="pagination">
@@ -113,11 +119,11 @@
         {% if page < total_pages %} <li class="page-item">
             <a class="page-link" href="{{ url_for('index_users', page=page+1) }}">Siguiente</a>
             </li>
-            {% else %}
+        {% else %}
             <li class="page-item disabled">
                 <span class="page-link">Siguiente</span>
             </li>
-            {% endif %}
+        {% endif %}
     </ul>
 </nav>
 
