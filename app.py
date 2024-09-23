@@ -460,13 +460,19 @@ async def filter_users():
 '''
     Creamos una nueva nota en un usuario.
 '''
-@app.route('/notas/new/<string:dni>', methods=['POST'])
+@app.route('/notas/new/<string:dni>', methods=['GET', 'POST'])
 async def new_note(dni):
     if 'id' in session:
-        text = request.form['nota']
-        if text and text != "":
-            await notes.new_note(dni, text)
-            return redirect(url_for('client_details', dni=dni))
+        if session['role'] == "Administrador":
+            if request.method == "GET":
+                return render_template("notes/create.jinja", dni=dni, session=session)
+            else:
+                text = request.form['nota']
+                if text and text != "":
+                    await notes.new_note(dni, text)
+                    return redirect(url_for('client_details', dni=dni))
+                else:
+                    return render_template("notes/create.jinja", dni=dni, session=session)
         else:
             return redirect(url_for('index'))
     else:
@@ -551,17 +557,29 @@ async def upload_notes_csv():
 '''
     Ruta que actualiza una nota especifica de un cliente.
 '''
-@app.route('/notas/edit/<string:dni>/<int:id>', methods=['POST'])
+@app.route('/notas/edit/<string:dni>/<int:id>', methods=['GET', 'POST'])
 async def update_note(dni, id):
     if 'id' in session:
         if session['role'] == "Administrador":
-            note = request.form['note']
-            await notes.update_note(id, note)
-            return redirect(url_for("client_details", dni=dni))
+            if request.method == "GET":
+                note = await notes.get_note_by_id(id)
+                return render_template(
+                    "notes/edit.jinja", 
+                    note=note, 
+                    dni=dni, 
+                    id=id, 
+                    session=session
+                )
+            
+            else:
+                note = request.form['note']
+                await notes.update_note(id, note)
+                return redirect(url_for("client_details", dni=dni))
         else:
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
+    
         
 
 if __name__ == "__main__":

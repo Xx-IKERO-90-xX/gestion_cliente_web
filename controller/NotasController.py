@@ -135,3 +135,22 @@ async def update_note(id, text):
 
     connection.commit()
     connection.close()
+
+
+'''
+    Obtiene una nota por id.
+'''
+async def get_note_by_id(id):
+    connection = await database.open_database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(f"""
+        SELECT * FROM NOTAS
+        WHERE id = {id};
+    """)
+
+    result = cursor.fetchall()
+    json_result = await database.covert_to_json(cursor, result)
+
+    connection.close()
+    return json_result[0]

@@ -1,0 +1,36 @@
+{%extends 'base.jinja'%}
+
+{%block title%} Editar Nota {%endblock%}
+
+{%block content%}
+
+<link href="../../static/style/forms.css" rel="stylesheet">
+<style> 
+    form {
+        padding: 10px;
+        border-radius: 10px;
+    }
+    form textarea {
+        width: 100%;
+        height: 200px;
+        padding: 5px;
+        resize: none;
+        text-align: left;
+        border-radius: 10px;
+    }
+
+</style>
+<br><br><br>
+<div style="text-align: center">
+    <a class="btn btn-primary" href="{{url_for('client_details', dni=dni)}}"><strong>Volver</strong></a>
+</div>
+<br><br><br><br><br><br>
+<form style="background: rgb(110, 110, 110);" class="createForm" method="post" action="{{url_for('update_note', dni=dni, id=id)}}">
+    <h2><strong style="color: white;">Nota</strong></h2><br>
+    <textarea name="nota">{{note['texto']}}</textarea>
+    <br><br>
+    <button type="subbmit" class="btn btn-success"><strong>Editar</strong></button>
+</form>
+
+
+{%endblock%}
